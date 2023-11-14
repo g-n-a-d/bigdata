@@ -20,7 +20,7 @@ iterInterval = 5
 
 with open('twitter.csv', 'w', newline='') as file:
     writer = csv.writer(file)
-    writer.writerow(["UserTag", "Time", "Tweet", "Reply", "reTweet", "Like", "View", "imageUrl"])
+    writer.writerow(["UserTag", "Time", "Tweet", "imageUrl", "Reply", "reTweet", "Like", "View"])
 
 file = open('twitter.csv', 'a', newline='')
 writer = csv.writer(file)
@@ -57,7 +57,7 @@ driver.get(URL)
 time.sleep(5)
 for i in range(numIter):
     try:    
-        articles = driver.find_elements(By.XPATH,"//article[@data-testid='tweet']")
+        articles = driver.find_elements(By.XPATH, "//article[@data-testid='tweet']")
     except:
         print("Iter {}/{}: Lagging catched, waiting.".format(i + 1, numIter))
         time.sleep(17)
@@ -67,7 +67,7 @@ for i in range(numIter):
         UserTag = ""
         try:
             driver.implicitly_wait(5)
-            UserTag = article.find_element(By.XPATH,".//div[@data-testid='User-Name']").text
+            UserTag = article.find_element(By.XPATH, ".//div[@data-testid='User-Name']").text
             # UserTags.append(UserTag)
         except:
             pass
@@ -75,7 +75,7 @@ for i in range(numIter):
         Time = ""
         try:
             driver.implicitly_wait(5)
-            Time = article.find_element(By.XPATH,".//time").get_attribute('datetime')
+            Time = article.find_element(By.XPATH, ".//time").get_attribute("datetime")
             # Times.append(Time)
         except:
             pass
@@ -83,15 +83,23 @@ for i in range(numIter):
         Tweet = ""
         try:
             driver.implicitly_wait(5)
-            Tweet = article.find_element(By.XPATH,".//div[@data-testid='tweetText']").text
+            Tweet = article.find_element(By.XPATH, ".//div[@data-testid='tweetText']").text
             # Tweets.append(Tweet)
+        except:
+            pass
+    
+        imageUrl = ""
+        try:
+            driver.implicitly_wait(5)
+            imageUrl = article.find_element(By.XPATH, ".//div[@data-testid='tweetPhoto']/img").get_attribute("src")
+            # imageUrls.append(imageUrl)
         except:
             pass
     
         Reply = ""
         try:
             driver.implicitly_wait(5)
-            Reply = article.find_element(By.XPATH,".//div[@data-testid='reply']").text
+            Reply = article.find_element(By.XPATH, ".//div[@data-testid='reply']").text
             # Replys.append(Reply)
         except:
             pass
@@ -99,7 +107,7 @@ for i in range(numIter):
         reTweet = ""
         try:
             driver.implicitly_wait(5)
-            reTweet = article.find_element(By.XPATH,".//div[@data-testid='retweet']").text
+            reTweet = article.find_element(By.XPATH, ".//div[@data-testid='retweet']").text
             # reTweets.append(reTweet)
         except:
             pass
@@ -107,7 +115,7 @@ for i in range(numIter):
         Like = ""
         try:
             driver.implicitly_wait(5)
-            Like = article.find_element(By.XPATH,".//div[@data-testid='like']").text
+            Like = article.find_element(By.XPATH, ".//div[@data-testid='like']").text
             # Likes.append(Like)
         except:
             pass
@@ -115,20 +123,12 @@ for i in range(numIter):
         View = ""
         try:
             driver.implicitly_wait(5)
-            View = article.find_element(By.XPATH,".//a[@role='link']/div/div[2]/span/span/span").text
+            View = article.find_element(By.XPATH, ".//a[@role='link']/div/div[2]/span/span/span").text
             # Views.append(View)
         except:
             pass
 
-        imageUrl = ""
-        try:
-            driver.implicitly_wait(5)
-            imageUrl = article.find_element(By.XPATH,".//div[@data-testid='tweetPhoto']/img").getAttribute("src")
-            # imageUrls.append(imageUrl)
-        except:
-            pass
-
-        writer.writerow([UserTag, Time, Tweet, Reply, reTweet, Like, View, imageUrl])
+        writer.writerow([UserTag, Time, Tweet, imageUrl, Reply, reTweet, Like, View])
 
     # driver.execute_script('window.scrollTo(0,document.body.scrollHeight);')
     print("Iter {}/{}: Retrieving succeed.".format(i + 1, numIter))
